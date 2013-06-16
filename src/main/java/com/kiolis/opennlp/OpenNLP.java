@@ -1,10 +1,8 @@
 package com.kiolis.opennlp;
 
-import opennlp.tools.cmdline.parser.ParserTool;
-import opennlp.tools.parser.Parse;
-import opennlp.tools.parser.Parser;
-import opennlp.tools.parser.ParserFactory;
-import opennlp.tools.parser.ParserModel;
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.util.Sequence;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,15 +24,25 @@ public class OpenNLP {
     private void test() {
         InputStream modelIS = null;
         try {
-            modelIS = this.getClass().getClassLoader().getResourceAsStream("opennlp/en-parser-chunking.bin");
-            ParserModel parserModel = new ParserModel(modelIS);
-            Parser parser = ParserFactory.create(parserModel);
+
+            modelIS = this.getClass().getClassLoader().getResourceAsStream("opennlp/fr-pos.bin");
+
+            POSModel model = new POSModel(modelIS);
+
+            POSTaggerME tagger = new POSTaggerME(model);
             String sentence = "The quick brown fox jumps over the lazy dog .";
 
-            Parse topParses[] = ParserTool.parseLine(sentence, parser, 1);
-            for(Parse parse : topParses){
-                parse.show();
+            String sent[] = new String[]{"Most", "large", "cities", "in", "the", "US", "had",
+                    "morning", "and", "afternoon", "newspapers", "."};
+            String tags[] = tagger.tag(sent);
+
+            for(String tag : tags){
+                System.out.println("Tag: " + tag);
             }
+
+            double probs[] = tagger.probs();
+
+            Sequence topSequences[] = tagger.topKSequences(sent);
 
         } catch (Exception e) {
             e.printStackTrace();
