@@ -32,8 +32,7 @@ public class OpenNLP {
             POSTaggerME tagger = new POSTaggerME(model);
             String sentence = "The quick brown fox jumps over the lazy dog .";
 
-            String sent[] = new String[]{"Most", "large", "cities", "in", "the", "US", "had",
-                    "morning", "and", "afternoon", "newspapers", "."};
+            String sent[] = new String[]{"Le", "nom", "de", "mon", "chat", "est", "Belvedere", "."};
             String tags[] = tagger.tag(sent);
 
             for(String tag : tags){
