@@ -1,7 +1,10 @@
 package com.kiolis.opennlp;
 
-import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.sentdetect.SentenceModel;
+import opennlp.tools.cmdline.parser.ParserTool;
+import opennlp.tools.parser.Parse;
+import opennlp.tools.parser.Parser;
+import opennlp.tools.parser.ParserFactory;
+import opennlp.tools.parser.ParserModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,17 +26,17 @@ public class OpenNLP {
     private void test() {
         InputStream modelIS = null;
         try {
-            modelIS = this.getClass().getClassLoader().getResourceAsStream("opennlp/en-sent.bin");
-            SentenceModel model = new SentenceModel(modelIS);
+            modelIS = this.getClass().getClassLoader().getResourceAsStream("opennlp/en-parser-chunking.bin");
+            ParserModel parserModel = new ParserModel(modelIS);
+            Parser parser = ParserFactory.create(parserModel);
+            String sentence = "The quick brown fox jumps over the lazy dog .";
 
-
-            SentenceDetectorME sentenceDetector = new SentenceDetectorME(model);
-            String sentences[] = sentenceDetector.sentDetect("  First sentence. Second sentence. ");
-            for(String sentence : sentences){
-                System.out.println("Sentence: " + sentence);
+            Parse topParses[] = ParserTool.parseLine(sentence, parser, 1);
+            for(Parse parse : topParses){
+                parse.show();
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (modelIS != null) {
